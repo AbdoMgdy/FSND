@@ -194,6 +194,7 @@ def create_venue_form():
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
     # TODO: insert form data as a new Venue record in the db, instead [Done]
+    # TODO: modify data to be the data object returned from db insertion
     temp = {}
     temp['name'] = request.form.get('name', '')
     temp['city'] = request.form.get('city', '')
@@ -214,13 +215,13 @@ def create_venue_submission():
         print(sys.exc_info())
     finally:
         db.session.close()
-    # TODO: modify data to be the data object returned from db insertion
+    # TODO: on unsuccessful db insert, flash an error instead [Done]
+    if error:
 
+        flash('An error occured. Venue ' + request.form['name'] + 'coulb not be listed.')
     # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    else:
+        flash('Venue ' + request.form['name'] + ' was successfully listed!')
     return render_template('pages/home.html')
 
 
