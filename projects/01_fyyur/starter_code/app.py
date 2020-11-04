@@ -256,9 +256,27 @@ def show_venue(venue_id):
     #     "upcoming_shows_count": 1,
     # }
     # data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
-    data = []
+    data = {}
     venue = Venue.query.get(venue_id)
     if venue:
+        data['id'] = venue.id
+        data['name'] = venue.name
+        data['genres'] = venue.genres.replace('{', '').replace('}', '').split(',')
+        data['address'] = venue.address
+        data['city'] = venue.city
+        data['state'] = venue.state
+        data['phone'] = venue.phone
+        data['facebook_link'] = venue.facebook_link
+        data['past_shows'] = [{
+            'artist_id': show.artist_id,
+            'start_time': show.start_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        } for show in venue.shows if show.start_time < datetime.now()]
+        data['upcoming_shows'] = [{
+            'artist_id': show.artist_id,
+            'start_time': show.start_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        } for show in venue.shows if show.start_time > datetime.now()]
+        data['past_shows_count'] = len([1 for show in venue.shows if show.start_time < datetime.now()])
+        data['upcoming_shows_count'] = len([1 for show in venue.shows if show.start_time > datetime.now()])
         return render_template('pages/show_venue.html', venue=data)
     return 'Error Venue not found !', 404
 
