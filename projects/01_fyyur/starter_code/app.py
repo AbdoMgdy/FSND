@@ -3,6 +3,7 @@
 #----------------------------------------------------------------------------#
 
 import json
+from datetime import datetime
 import dateutil.parser
 import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
@@ -23,7 +24,7 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# TODO: connect to a local postgresql database
+# TODO: connect to a local postgresql database [Done]
 
 #----------------------------------------------------------------------------#
 # Models.
@@ -47,7 +48,7 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.String())
     website = db.Column(db.String())
     shows = db.relationship('Show', backref='venue', lazy=True, cascade="all")
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate [Done]
 
 
 class Artist(db.Model):
@@ -66,9 +67,9 @@ class Artist(db.Model):
     website = db.Column(db.String(120))
     show = db.relationship('Show', backref='artist', lazy=True, cascade="all")
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate [Done]
 
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration [Done]
 
 
 class Show(db.Model):
@@ -110,7 +111,7 @@ def index():
 @app.route('/venues')
 def venues():
     # TODO: replace with real venues data.
-    #       num_shows should be aggregated based on number of upcoming shows per venue.
+    # TODO: num_shows should be aggregated based on number of upcoming shows per venue.
     data = [{
         "city": "San Francisco",
         "state": "CA",
@@ -132,6 +133,21 @@ def venues():
             "num_upcoming_shows": 0,
         }]
     }]
+
+    venus = Venue.query.all()
+    for venue in venues:
+        data.append({
+            'city': venue.city,
+            'state': venue.state,
+            'venues': [
+                {
+                    'id': venue.id,
+                    'name': venue.name,
+                    'num_upcoming_shows': len([1 for show in venue.shows if show.start_time < datetime.now()])
+                }
+            ]
+        })
+
     return render_template('pages/venues.html', areas=data)
 
 
@@ -166,7 +182,7 @@ def show_venue(venue_id):
         "website": "https://www.themusicalhop.com",
         "facebook_link": "https://www.facebook.com/TheMusicalHop",
         "seeking_talent": True,
-        "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
+        # "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
         "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
         "past_shows": [{
             "artist_id": 4,
