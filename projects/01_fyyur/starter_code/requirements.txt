@@ -1,4 +1,8 @@
 babel
+SQLAlchemy
+postgres
+Flask
+Flask-Migrate
 python-dateutil==2.6.0
 flask-moment
 flask-wtf
