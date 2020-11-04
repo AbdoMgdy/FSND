@@ -266,19 +266,19 @@ def search_artists():
     # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
     # search for "band" should return "The Wild Sax Band".
     response = {'count': 0, 'data': []}
-    data = []
     search_term = request.form.get('search_term', '')
     artists = Artist.query.filter(Artist.name.contains(search_term)).all()
-    for artist in artists:
-        data.append({
-            'id': artist.id,
-            'name': artist.name,
-            'num_upcoming_shows': len([1 for show in artist.show if show.start_time < datetime.now()])
-        })
-        response['count'] += 1
-        response['data'] += data
+    if artists:
+        for artist in artists:
+            response['data'].append({
+                'id': artist.id,
+                'name': artist.name,
+                'num_upcoming_shows': len([0 for show in artist.show if show.start_time < datetime.now()])
+            })
+            response['count'] += 1
 
-    return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
+        return render_template('pages/search_artists.html', results=response, search_term=search_term)
+    return 'Artist Not Found !', 404
 
 
 @app.route('/artists/<int:artist_id>')
