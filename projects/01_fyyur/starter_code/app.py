@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
-
+import sys
 import json
 from datetime import datetime
 import dateutil.parser
@@ -10,7 +10,7 @@ from flask import Flask, render_template, request, Response, flash, redirect, ur
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
-from logging import Formatter, FileHandler
+from logging import Formatter, FileHandler, error
 from flask_wtf import Form
 from forms import *
 from flask_migrate import Migrate
@@ -193,7 +193,27 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-    # TODO: insert form data as a new Venue record in the db, instead
+    # TODO: insert form data as a new Venue record in the db, instead [Done]
+    temp = {}
+    temp['name'] = request.form.get('name', '')
+    temp['city'] = request.form.get('city', '')
+    temp['address'] = request.form.get('address', '')
+    temp['city'] = request.form.get('city', '')
+    temp['state'] = request.form.get('state', '')
+    temp['genres'] = request.form.get('genres', '')
+    temp['facebook_link'] = request.form.get('facebook_link', '')
+    temp['phone'] = request.form.get('phone', '')
+    error = False
+    try:
+        venue = Venue(**temp)
+        db.session.add(venue)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        error = True
+        print(sys.exc_info())
+    finally:
+        db.session.close()
     # TODO: modify data to be the data object returned from db insertion
 
     # on successful db insert, flash success
