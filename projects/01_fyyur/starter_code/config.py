@@ -11,3 +11,5 @@ DEBUG = True
 
 # TODO IMPLEMENT DATABASE URL
 SQLALCHEMY_DATABASE_URI = "postgres://abdo:root@127.0.0.1:5432/fuyyer"
+
+SECRET_KEY = 'this is a very secret string'
