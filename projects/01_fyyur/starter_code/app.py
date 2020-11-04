@@ -200,7 +200,7 @@ def create_venue_submission():
     temp['address'] = request.form.get('address', '')
     temp['city'] = request.form.get('city', '')
     temp['state'] = request.form.get('state', '')
-    temp['genres'] = request.form.get('genres', '')
+    temp['genres'] = request.form.getlist('genres', '')
     temp['facebook_link'] = request.form.get('facebook_link', '')
     temp['phone'] = request.form.get('phone', '')
     error = False
