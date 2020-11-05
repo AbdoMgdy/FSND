@@ -559,7 +559,7 @@ def shows():
     shows = Show.query.all()
     for show in shows:
         artist = Artist.query.get(show.artist_id)
-        venue = Venue.query.get(show.venu_id)
+        venue = Venue.query.get(show.venue_id)
         data.append({
             "venue_id": show.venue_id,
             "venue_name": venue.name,
