@@ -520,30 +520,30 @@ def create_artist_submission():
     # TODO: insert form data as a new Venue record in the db, instead [Done]
     # TODO: modify data to be the data object returned from db insertion [Done]
 
-        data = {}
-        data['name'] = request.form.get('name', '')
-        data['city'] = request.form.get('city', '')
-        data['state'] = request.form.get('state', '')
-        data['genres'] = request.form.get('genres', '')
-        data['facebook_link'] = request.form.get('facebook_link', '')
-        data['phone'] = request.form.get('phone', '')
-        error = False
-        try:
-            artist = Artist(**data)
-            db.session.add(artist)
-            db.session.commit()
-        except:
-            db.session.rollback()
-            error = True
-            print(sys.exc_info())
-        finally:
-            db.session.close()
+    data = {}
+    data['name'] = request.form.get('name', '')
+    data['city'] = request.form.get('city', '')
+    data['state'] = request.form.get('state', '')
+    data['genres'] = request.form.get('genres', '')
+    data['facebook_link'] = request.form.get('facebook_link', '')
+    data['phone'] = request.form.get('phone', '')
+    error = False
+    try:
+        artist = Artist(**data)
+        db.session.add(artist)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        error = True
+        print(sys.exc_info())
+    finally:
+        db.session.close()
     # TODO: on unsuccessful db insert, flash an error instead. [Done]
-        if error:
-            flash('An error occurred. Artist ' + request.form.get('name', '') + ' could not be listed.')
+    if error:
+        flash('An error occurred. Artist ' + request.form.get('name', '') + ' could not be listed.')
     # on successful db insert, flash success
-        else:
-            flash('Artist ' + request.form.get('name', '') + ' was successfully listed!')
+    else:
+        flash('Artist ' + request.form.get('name', '') + ' was successfully listed!')
 
     return render_template('pages/home.html')
 
@@ -554,44 +554,56 @@ def create_artist_submission():
 @app.route('/shows')
 def shows():
     # displays list of shows at /shows
-    # TODO: replace with real venues data.
-    #       num_shows should be aggregated based on number of upcoming shows per venue.
-    data = [{
-        "venue_id": 1,
-        "venue_name": "The Musical Hop",
-        "artist_id": 4,
-        "artist_name": "Guns N Petals",
-        "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-        "start_time": "2019-05-21T21:30:00.000Z"
-    }, {
-        "venue_id": 3,
-        "venue_name": "Park Square Live Music & Coffee",
-        "artist_id": 5,
-        "artist_name": "Matt Quevedo",
-        "artist_image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-        "start_time": "2019-06-15T23:00:00.000Z"
-    }, {
-        "venue_id": 3,
-        "venue_name": "Park Square Live Music & Coffee",
-        "artist_id": 6,
-        "artist_name": "The Wild Sax Band",
-        "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-        "start_time": "2035-04-01T20:00:00.000Z"
-    }, {
-        "venue_id": 3,
-        "venue_name": "Park Square Live Music & Coffee",
-        "artist_id": 6,
-        "artist_name": "The Wild Sax Band",
-        "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-        "start_time": "2035-04-08T20:00:00.000Z"
-    }, {
-        "venue_id": 3,
-        "venue_name": "Park Square Live Music & Coffee",
-        "artist_id": 6,
-        "artist_name": "The Wild Sax Band",
-        "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-        "start_time": "2035-04-15T20:00:00.000Z"
-    }]
+    # TODO: replace with real venues data [Donw]
+    data = []
+    shows = Show.query.all()
+    for show in shows:
+        artist = Artist.query.get(show.artist_id)
+        venue = Venue.query.get(show.venu_id)
+        data.append({
+            "venue_id": show.venue_id,
+            "venue_name": venue.name,
+            "artist_id": show.artist.id,
+            "artist_name": artist.name,
+            "artist_image_link": artist.image_link,
+            "start_time": show.start_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        })
+    # data = [{
+    #     "venue_id": 1,
+    #     "venue_name": "The Musical Hop",
+    #     "artist_id": 4,
+    #     "artist_name": "Guns N Petals",
+    #     "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
+    #     "start_time": "2019-05-21T21:30:00.000Z"
+    # }, {
+    #     "venue_id": 3,
+    #     "venue_name": "Park Square Live Music & Coffee",
+    #     "artist_id": 5,
+    #     "artist_name": "Matt Quevedo",
+    #     "artist_image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
+    #     "start_time": "2019-06-15T23:00:00.000Z"
+    # }, {
+    #     "venue_id": 3,
+    #     "venue_name": "Park Square Live Music & Coffee",
+    #     "artist_id": 6,
+    #     "artist_name": "The Wild Sax Band",
+    #     "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
+    #     "start_time": "2035-04-01T20:00:00.000Z"
+    # }, {
+    #     "venue_id": 3,
+    #     "venue_name": "Park Square Live Music & Coffee",
+    #     "artist_id": 6,
+    #     "artist_name": "The Wild Sax Band",
+    #     "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
+    #     "start_time": "2035-04-08T20:00:00.000Z"
+    # }, {
+    #     "venue_id": 3,
+    #     "venue_name": "Park Square Live Music & Coffee",
+    #     "artist_id": 6,
+    #     "artist_name": "The Wild Sax Band",
+    #     "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
+    #     "start_time": "2035-04-15T20:00:00.000Z"
+    # }]
     return render_template('pages/shows.html', shows=data)
 
 
