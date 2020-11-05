@@ -412,9 +412,36 @@ def edit_artist(artist_id):
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
     # TODO: take values from the form submitted, and update existing
+    artist = Artist.query.get(artist_id)
+    error = False
+    if artist:
+        try:
+            artist.name = request.form.get('name', '')
+            artist.genres = request.form.getlist('genres', '')
+            artist.city = request.form.get('city', '')
+            artist.state = request.form.get('state', '')
+            artist.phone = request.form.get('phone', '')
+            artist.website = request.form.get('website', '')
+            artist.facebook_link = request.form.get('facebook_link', '')
+            artist.seeking_venue = request.form.get('seeking_venue', '')
+            artist.seeking_description = request.form.get('seeking_description', '')
+            artist.image_link = request.form.get('image_link', '')
+            db.session.commit()
+        except:
+            error = True
+            db.session.rollback()
+            print(sys.exc_info())
+        finally:
+            db.session.close()
+        if error:
+            flash('An error occurred.')
+        else:
+            flash('Artist was successfully updated!')
+
     # artist record with ID <artist_id> using the new attributes
 
-    return redirect(url_for('show_artist', artist_id=artist_id))
+        return redirect(url_for('show_artist', artist_id=artist_id))
+    return 'Artist Was not found.', 404
 
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
