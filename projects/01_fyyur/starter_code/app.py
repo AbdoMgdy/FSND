@@ -150,6 +150,11 @@ def create_venue_submission():
     temp['city'] = request.form.get('city', '')
     temp['state'] = request.form.get('state', '')
     temp['genres'] = request.form.get('genres', '')
+    temp['seeking_description'] = request.form.get('seeking_description', '')
+    if request.form.get('seeking_talent') == 'y':
+        temp['seeking_talent'] = True
+    else:
+        temp['seeking_talent'] = False
     temp['facebook_link'] = request.form.get('facebook_link', '')
     temp['image_link'] = request.form.get('image_link', '')
     temp['website'] = request.form.get('website', '')
@@ -398,6 +403,7 @@ def create_artist_submission():
     # TODO: insert form data as a new Venue record in the db, instead [Done]
     # TODO: modify data to be the data object returned from db insertion [Done]
     form = ArtistForm()
+    print(request.form)
     data = {}
     data['name'] = request.form.get('name', '')
     data['city'] = request.form.get('city', '')
@@ -406,7 +412,10 @@ def create_artist_submission():
     data['facebook_link'] = request.form.get('facebook_link', '')
     data['image_link'] = request.form.get('image_link', '')
     data['website'] = request.form.get('website', '')
-    data['seeking_venue'] = request.form.get('seeking_venue', '')
+    if request.form.get('seeking_venue', '') == 'y':
+        data['seeking_venue'] = True
+    else:
+        data['seeking_venue'] = False
     data['seeking_description'] = request.form.get('seeking_description', '')
     data['phone'] = request.form.get('phone', '')
     error = False
