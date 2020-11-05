@@ -143,36 +143,36 @@ def create_venue_submission():
     # TODO: insert form data as a new Venue record in the db, instead [Done]
     # TODO: modify data to be the data object returned from db insertion
     form = VenueForm()
-    if form.validate():
-        temp = {}
-        temp['name'] = request.form.get('name', '')
-        temp['city'] = request.form.get('city', '')
-        temp['address'] = request.form.get('address', '')
-        temp['city'] = request.form.get('city', '')
-        temp['state'] = request.form.get('state', '')
-        temp['genres'] = request.form.getlist('genres', '')
-        temp['facebook_link'] = request.form.get('facebook_link', '')
-        temp['phone'] = request.form.get('phone', '')
-        error = False
-        try:
-            venue = Venue(**temp)
-            db.session.add(venue)
-            db.session.commit()
-        except:
-            db.session.rollback()
-            error = True
-            print(sys.exc_info())
-        finally:
-            db.session.close()
-        # TODO: on unsuccessful db insert, flash an error instead [Done]
-        if error:
+    temp = {}
+    temp['name'] = request.form.get('name', '')
+    temp['city'] = request.form.get('city', '')
+    temp['address'] = request.form.get('address', '')
+    temp['city'] = request.form.get('city', '')
+    temp['state'] = request.form.get('state', '')
+    temp['genres'] = request.form.get('genres', '')
+    temp['facebook_link'] = request.form.get('facebook_link', '')
+    temp['image_link'] = request.form.get('image_link', '')
+    temp['website'] = request.form.get('website', '')
+    temp['phone'] = request.form.get('phone', '')
+    error = False
+    try:
+        venue = Venue(**temp)
+        db.session.add(venue)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        error = True
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    # TODO: on unsuccessful db insert, flash an error instead [Done]
+    if error:
 
-            flash('An error occured. Venue ' + request.form['name'] + 'coulb not be listed.')
-        # on successful db insert, flash success
-        else:
-            flash('Venue ' + request.form['name'] + ' was successfully listed!')
-        return render_template('pages/home.html')
-    return 'Invalid Input or missing Input, Pls try Again', 401
+        flash('An error occured. Venue ' + request.form['name'] + 'coulb not be listed.')
+    # on successful db insert, flash success
+    else:
+        flash('Venue ' + request.form['name'] + ' was successfully listed!')
+    return render_template('pages/home.html')
 
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
@@ -398,34 +398,36 @@ def create_artist_submission():
     # TODO: insert form data as a new Venue record in the db, instead [Done]
     # TODO: modify data to be the data object returned from db insertion [Done]
     form = ArtistForm()
-    if form.validate():
-        data = {}
-        data['name'] = request.form.get('name', '')
-        data['city'] = request.form.get('city', '')
-        data['state'] = request.form.get('state', '')
-        data['genres'] = request.form.get('genres', '')
-        data['facebook_link'] = request.form.get('facebook_link', '')
-        data['phone'] = request.form.get('phone', '')
-        error = False
-        try:
-            artist = Artist(**data)
-            db.session.add(artist)
-            db.session.commit()
-        except:
-            db.session.rollback()
-            error = True
-            print(sys.exc_info())
-        finally:
-            db.session.close()
-        # TODO: on unsuccessful db insert, flash an error instead. [Done]
-        if error:
-            flash('An error occurred. Artist ' + request.form.get('name', '') + ' could not be listed.')
-        # on successful db insert, flash success
-        else:
-            flash('Artist ' + request.form.get('name', '') + ' was successfully listed!')
+    data = {}
+    data['name'] = request.form.get('name', '')
+    data['city'] = request.form.get('city', '')
+    data['state'] = request.form.get('state', '')
+    data['genres'] = request.form.get('genres', '')
+    data['facebook_link'] = request.form.get('facebook_link', '')
+    data['image_link'] = request.form.get('image_link', '')
+    data['website'] = request.form.get('website', '')
+    data['seeking_venue'] = request.form.get('seeking_venue', '')
+    data['seeking_description'] = request.form.get('seeking_description', '')
+    data['phone'] = request.form.get('phone', '')
+    error = False
+    try:
+        artist = Artist(**data)
+        db.session.add(artist)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        error = True
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    # TODO: on unsuccessful db insert, flash an error instead. [Done]
+    if error:
+        flash('An error occurred. Artist ' + request.form.get('name', '') + ' could not be listed.')
+    # on successful db insert, flash success
+    else:
+        flash('Artist ' + request.form.get('name', '') + ' was successfully listed!')
 
-        return render_template('pages/home.html')
-    return 'Invalid or Missing Input, Pls try again', 401
+    return render_template('pages/home.html')
 
 
 #  Shows
