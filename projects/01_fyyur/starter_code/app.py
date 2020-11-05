@@ -404,7 +404,9 @@ def edit_artist(artist_id):
             "image_link": artist.image_link
         }
     # TODO: populate form with fields from artist with ID <artist_id> [Done]
-    return render_template('forms/edit_artist.html', form=form, artist=data)
+        return render_template('forms/edit_artist.html', form=form, artist=data)
+
+    return 'Artist not Found', 404
 
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
