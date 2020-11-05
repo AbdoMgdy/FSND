@@ -467,14 +467,42 @@ def edit_venue(venue_id):
     # TODO: populate form with values from venue with ID <venue_id> [Done]
 
         return render_template('forms/edit_venue.html', form=form, venue=data)
-    return 'Venue not foudn.', 404
+    return 'Venue not found.', 404
 
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
-    # TODO: take values from the form submitted, and update existing
+    # TODO: take values from the form submitted, and update existing [Done]
+    venue = Venue.query.get(venue_id)
+    error = False
+    if venue:
+        try:
+            venue.name = request.form.get('name', '')
+            venue.address = request.form.get('address', '')
+            venue.genres = request.form.get.getlist('genres,''')
+            venue.city = request.form.get('city', '')
+            venue.state = request.form.get('state', '')
+            venue.phone = request.form.get('phone', '')
+            venue.website = request.form.get('website', '')
+            venue.facebook_link = request.form.get('facebook_link', '')
+            venue.seeking_talent = request.form.get('seeking_talent', '')
+            venue.seeking_description = request.form.get('seeking_description', '')
+            venue.image_link = request.form.get('image_link', '')
+            db.session.commit()
+        except:
+            error = True
+            db.session.rollback()
+            print(sys.exc_info())
+        finally:
+            db.session.close()
+
+        if error:
+            flash('An error occurred. Venue could not be updated.')
+        else:
+            flash('Venue was successfully updated!')
     # venue record with ID <venue_id> using the new attributes
-    return redirect(url_for('show_venue', venue_id=venue_id))
+        return redirect(url_for('show_venue', venue_id=venue_id))
+    return 'Venue not found', 404
 
 #  Create Artist
 #  ----------------------------------------------------------------
