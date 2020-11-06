@@ -13,7 +13,7 @@ from logging import Formatter, FileHandler, error
 from flask_wtf import Form
 from flask_wtf import form
 from forms import *
-from flask_migrate import Migrate
+from flask_migrate import Migrate, show
 from models import attach_db, Artist, Venue, Show
 #----------------------------------------------------------------------------#
 # App Config.
@@ -104,7 +104,13 @@ def show_venue(venue_id):
     # shows the venue page with the given venue_id
     # TODO: replace with real venue data from the venues table, using venue_id [Done]
     data = {}
-    venue = Venue.query.get(venue_id)
+    shows = []
+    join_query = db.session.query(Venue, Show).filter(Venue.id == Show.venue_id).first()
+    venue = join_query[0]
+    if join_query[1] is not list:
+        shows.append(join_query[1])
+    else:
+        shows = join_query[1]
     if venue:
         data['id'] = venue.id
         data['name'] = venue.name
@@ -117,11 +123,11 @@ def show_venue(venue_id):
         data['past_shows'] = [{
             'artist_id': show.artist_id,
             'start_time': show.start_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        } for show in venue.shows if show.start_time < datetime.now()]
+        } for show in shows if show.start_time < datetime.now()]
         data['upcoming_shows'] = [{
             'artist_id': show.artist_id,
             'start_time': show.start_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        } for show in venue.shows if show.start_time > datetime.now()]
+        } for show in shows if show.start_time > datetime.now()]
         data['past_shows_count'] = len([0 for show in venue.shows if show.start_time < datetime.now()])
         data['upcoming_shows_count'] = len([0 for show in venue.shows if show.start_time > datetime.now()])
         return render_template('pages/show_venue.html', venue=data)
