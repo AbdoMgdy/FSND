@@ -483,31 +483,29 @@ def create_show_submission():
     # called to create new shows in the db, upon submitting new show listing form
     # TODO: insert form data as a new Show record in the db, instead [Done]
     form = ShowForm()
-    if form.validate():
-        data = {}
-        data['artist_id'] = request.form.get('artist_id', '')
-        data['venue_id'] = request.form.get('venue_id', '')
-        data['start_time'] = request.form.get('start_time', '')
-        error = False
-        try:
-            show = Show(**data)
-            db.session.add(show)
-            db.session.commit()
-        except:
-            db.session.rollback()
-            error = True
-            print(sys.exc_info())
-        finally:
-            db.session.close()
-        # TODO: on unsuccessful db insert, flash an error instead. [Done]
-        if error:
-            flash('An error occurred. Show could not be listed.')
-        # on successful db insert, flash success
-        else:
-            flash('Show was successfully listed!')
+    data = {}
+    data['artist_id'] = request.form.get('artist_id', '')
+    data['venue_id'] = request.form.get('venue_id', '')
+    data['start_time'] = request.form.get('start_time', '')
+    error = False
+    try:
+        show = Show(**data)
+        db.session.add(show)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        error = True
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    # TODO: on unsuccessful db insert, flash an error instead. [Done]
+    if error:
+        flash('An error occurred. Show could not be listed.')
+    # on successful db insert, flash success
+    else:
+        flash('Show was successfully listed!')
 
-        return render_template('pages/home.html')
-    return 'Invalid or Missing Input', 401
+    return render_template('pages/home.html')
 
 
 @app.errorhandler(404)
