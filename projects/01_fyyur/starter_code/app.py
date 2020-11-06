@@ -1,6 +1,7 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
+from enum import unique
 import sys
 import json
 from datetime import datetime
@@ -14,6 +15,7 @@ from flask_wtf import Form
 from flask_wtf import form
 from forms import *
 from flask_migrate import Migrate, show
+from sqlalchemy import distinct
 from models import attach_db, Artist, Venue, Show
 #----------------------------------------------------------------------------#
 # App Config.
@@ -60,20 +62,23 @@ def venues():
     # TODO: replace with real venues data [Done]
     # num_shows should be aggregated based on number of upcoming shows per venue.
     data = []
-
+    q = db.session.query(Venue).distinct(Venue.city, Venue.state).all()
+    for v in q:
+        data.append({'city': v.city,
+                     'state': v.state,
+                     'venues': []
+                     })
+    print(data)
     venues = Venue.query.all()
-    for venue in venues:
-        data.append({
-            'city': venue.city,
-            'state': venue.state,
-            'venues': [
-                {
-                    'id': venue.id,
-                    'name': venue.name,
-                    'num_upcoming_shows': len([0 for show in venue.shows if show.start_time < datetime.now()])
-                }
-            ]
-        })
+    for i, v in enumerate(data):
+        for venue in venues:
+            print(i, v)
+            if v['city'] == venue.city and v['state'] == venue.state:
+                data[i]["venues"].append({'id': venue.id,
+                                          'name': venue.name,
+                                          'num_upcoming_shows': len([0 for show in venue.shows if show.start_time < datetime.now()])
+                                          })
+
     return render_template('pages/venues.html', areas=data)
 
 
