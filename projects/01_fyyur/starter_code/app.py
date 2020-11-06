@@ -96,8 +96,7 @@ def search_venues():
                 'num_upcoming_shows': len([0 for show in venue.shows if show.start_time < datetime.now()])
             })
             response['count'] += 1
-        return render_template('pages/search_venues.html', results=response, search_term=search_term)
-    return 'Error Venue not found !', 404
+    return render_template('pages/search_venues.html', results=response, search_term=search_term)
 
 
 @app.route('/venues/<int:venue_id>')
@@ -232,8 +231,7 @@ def search_artists():
             })
             response['count'] += 1
 
-        return render_template('pages/search_artists.html', results=response, search_term=search_term)
-    return 'Artist Not Found !', 404
+    return render_template('pages/search_artists.html', results=response, search_term=search_term)
 
 
 @app.route('/artists/<int:artist_id>')
