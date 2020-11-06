@@ -232,7 +232,7 @@ def search_artists():
     # search for "band" should return "The Wild Sax Band".
     response = {'count': 0, 'data': []}
     search_term = request.form.get('search_term', '')
-    artists = Artist.query.filter(Artist.name.contains(search_term)).all()
+    artists = Artist.query.filter(Artist.name.contains(search_term.lower())).all()
     if artists:
         for artist in artists:
             response['data'].append({
