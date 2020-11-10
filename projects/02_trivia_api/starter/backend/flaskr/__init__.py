@@ -61,6 +61,15 @@ def create_app(test_config=None):
   Clicking on the page numbers should update the questions.
   '''
 
+    def paginate_questions(page, total_questions):
+        start = (page - 1) * QUESTIONS_PER_PAGE
+        end = start + QUESTIONS_PER_PAGE
+
+        questions = [question.format() for question in total_questions]
+        current_questions = questions[start:end]
+
+        return current_questions
+
     @app.route('/questions')
     def retrieve_questions():
         total_questions = Question.query.order_by(Question.id).all()
