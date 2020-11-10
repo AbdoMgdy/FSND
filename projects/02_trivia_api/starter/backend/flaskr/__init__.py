@@ -86,17 +86,26 @@ def create_app(test_config=None):
             'questions': selected_questions,
             'total_questions': len(total_questions),
             'categories': {category.format() for category in categories},
-            'current_category': None
         })
     '''
-  @TODO: 
-  Create an endpoint to DELETE question using a question ID. 
+  @TODO:
+  Create an endpoint to DELETE question using a question ID.
 
   TEST: When you click the trash icon next to a question, the question will be removed.
-  This removal will persist in the database and when you refresh the page. 
+  This removal will persist in the database and when you refresh the page.
   '''
 
-    @app.route('/questions')
+    @app.route('/questions/<int:id>', methods=['DELETE'])
+    def remove_question(id):
+        try:
+            question = Question.query.get(id)
+            question.delete()
+            return jsonify({
+                'success': True,
+                'deleted_question': id
+            })
+        except:
+            abort(400)
     '''
   @TODO: 
   Create an endpoint to POST a new question, 
@@ -107,7 +116,27 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
+    @app.route("/questions", methods=['POST'])
+    def add_question():
+        body = request.get_json()
 
+        if not ('question' in body and 'answer' in body and 'difficulty' in body and 'category' in body):
+            abort(400)
+
+        new_question = body.get('question')
+        new_answer = body.get('answer')
+        new_difficulty = body.get('difficulty')
+        new_category = body.get('category')
+        try:
+            question = Question(question=new_question, answer=new_answer,
+                                difficulty=new_difficulty, category=new_category)
+            question.insert()
+            return jsonify({
+                'success': True,
+                'created': question.id,
+            })
+        except:
+            abort(400)
     '''
   @TODO: 
   Create a POST endpoint to get questions based on a search term. 
@@ -118,7 +147,16 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+    @app.route('/questions/<string:search_term>', methods=['POST'])
+    def search_questions(search_term):
+        if search_term:
 
+            return jsonify({
+                'success': True,
+                'questions': [question.format() for question in search_results],
+                'total_questions': len(search_results),
+            })
+        abort(404)
     '''
   @TODO: 
   Create a GET endpoint to get questions based on category. 
