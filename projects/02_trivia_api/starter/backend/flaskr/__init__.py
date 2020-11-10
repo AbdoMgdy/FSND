@@ -36,7 +36,7 @@ def create_app(test_config=None):
   Create an endpoint to handle GET requests
   for all available categories.
   '''
-    @app.route('/categories')
+    @app.route('/categories', methods=['GET'])
     def retrieve_categories():
         categories = Category.query.order_by(Category.type).all()
 
@@ -66,24 +66,24 @@ def create_app(test_config=None):
         end = start + QUESTIONS_PER_PAGE
 
         questions = [question.format() for question in total_questions]
-        current_questions = questions[start:end]
+        selected_questions = questions[start:end]
 
-        return current_questions
+        return selected_questions
 
-    @app.route('/questions')
+    @app.route('/questions', methods=['GET'])
     def retrieve_questions():
         total_questions = Question.query.order_by(Question.id).all()
         page = request.args.get('page', 1)
-        current_questions = paginate_questions(page, total_questions)
+        selected_questions = paginate_questions(page, total_questions)
 
         categories = Category.query.order_by(Category.type).all()
 
-        if len(current_questions) == 0:
+        if len(selected_questions) == 0:
             abort(404)
 
         return jsonify({
             'success': True,
-            'questions': current_questions,
+            'questions': selected_questions,
             'total_questions': len(total_questions),
             'categories': {category.format() for category in categories},
             'current_category': None
@@ -96,6 +96,7 @@ def create_app(test_config=None):
   This removal will persist in the database and when you refresh the page. 
   '''
 
+    @app.route('/questions')
     '''
   @TODO: 
   Create an endpoint to POST a new question, 
