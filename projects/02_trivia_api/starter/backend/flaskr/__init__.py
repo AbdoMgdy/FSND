@@ -105,7 +105,7 @@ def create_app(test_config=None):
                 'deleted_question': id
             })
         except:
-            abort(400)
+            abort(422)
     '''
   @TODO:
   Create an endpoint to POST a new question,
@@ -121,7 +121,7 @@ def create_app(test_config=None):
         body = request.get_json()
 
         if not ('question' in body and 'answer' in body and 'difficulty' in body and 'category' in body):
-            abort(400)
+            abort(422)
 
         new_question = body.get('question')
         new_answer = body.get('answer')
@@ -136,7 +136,7 @@ def create_app(test_config=None):
                 'created': question.id,
             })
         except:
-            abort(400)
+            abort(422)
     '''
   @TODO:
   Create a POST endpoint to get questions based on a search term.
@@ -193,11 +193,36 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not.
   '''
+    @app.route('/quizzes', methods=['POST'])
+    def play_quiz():
+
+        try:
+
+            data = request.get_json()
+
+            category = data.get('quiz_category')
+            previous_questions = data.get('previous_questions')
+
+            if category['type'] == 'click':
+                available_questions = Question.query.filter(
+                    Question.id.notin_((previous_questions))).all()
+            else:
+                available_questions = Question.query.filter_by(
+                    category=category['id']).filter(Question.id.notin_((previous_questions))).all()
+
+            new_question = available_questions[random.randrange(
+                0, len(available_questions))].format() if len(available_questions) > 0 else None
+
+            return jsonify({
+                'success': True,
+                'question': new_question
+            })
+        except:
+            abort(422)
 
     '''
   @TODO:
   Create error handlers for all expected errors
   including 404 and 422.
   '''
-
     return app
