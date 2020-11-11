@@ -45,7 +45,8 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'categories': {category.id: category.type for category in categories}
+            'categories': {category.formatx
+                           () for category in categories}
         })
 
     '''
@@ -74,9 +75,11 @@ def create_app(test_config=None):
     def retrieve_questions():
         total_questions = Question.query.order_by(Question.id).all()
         page = request.args.get('page', 1)
-        selected_questions = paginate_questions(page, total_questions)
+        print(page)
+        selected_questions = paginate_questions(int(page), total_questions)
 
         categories = Category.query.order_by(Category.type).all()
+        print(categories)
 
         if len(selected_questions) == 0:
             abort(404)
@@ -85,7 +88,7 @@ def create_app(test_config=None):
             'success': True,
             'questions': selected_questions,
             'total_questions': len(total_questions),
-            'categories': {category.format() for category in categories},
+            'categories': [category.format() for category in categories],
         })
     '''
   @TODO:
@@ -95,7 +98,7 @@ def create_app(test_config=None):
   This removal will persist in the database and when you refresh the page.
   '''
 
-    @app.route('/questions/<int:id>', methods=['DELETE'])
+    @ app.route('/questions/<int:id>', methods=['DELETE'])
     def remove_question(id):
         try:
             question = Question.query.get(id)
@@ -116,7 +119,7 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.
   '''
-    @app.route("/questions", methods=['POST'])
+    @ app.route("/questions", methods=['POST'])
     def add_question():
         body = request.get_json()
 
@@ -147,7 +150,7 @@ def create_app(test_config=None):
   only question that include that string within their question.
   Try using the word "title" to start.
   '''
-    @app.route('/questions/<string:search_term>', methods=['POST'])
+    @ app.route('/questions/<string:search_term>', methods=['POST'])
     def search_questions(search_term):
         if search_term:
             search_results = Question.query.filter(
@@ -226,7 +229,7 @@ def create_app(test_config=None):
   including 404 and 422.
   '''
     @app.errorhandler(404)
-    def not_found():
+    def not_found(e):
         return jsonify({
             'success': False,
             'error': 404,
@@ -234,7 +237,7 @@ def create_app(test_config=None):
         }), 404
 
     @app.errorhandler(422)
-    def unprocessable():
+    def unprocessable(e):
         return jsonify({
             'success': False,
             'error': 422,
