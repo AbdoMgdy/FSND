@@ -45,8 +45,7 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'categories': {category.formatx
-                           () for category in categories}
+            'categories': [category.format() for category in categories]
         })
 
     '''
