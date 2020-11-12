@@ -260,6 +260,22 @@ def create_app(test_config=None):
             'message': 'Internal Server Error.'
         }), 500
 
+    @app.errorhandler(405)
+    def method_not_allowed(e):
+        return jsonify({
+            'success': False,
+            'error': 405,
+            'message': 'Method not allowed'
+        }), 405
+
+    @app.errorhandler(409)
+    def duplicate_resource(e):
+        return jsonify({
+            'success': False,
+            'error': 409,
+            'message': 'Duplicate resource'
+        }), 405
+
     @app.errorhandler(403)
     def forbidden(e):
         return jsonify({
