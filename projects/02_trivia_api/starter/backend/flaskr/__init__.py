@@ -154,8 +154,10 @@ def create_app(test_config=None):
   only question that include that string within their question.
   Try using the word "title" to start.
   '''
-    @ app.route('/questions/<string:search_term>', methods=['POST'])
-    def search_questions(search_term):
+    @ app.route('/questions/search', methods=['POST'])
+    def search_questions():
+        data = request.get_json()
+        search_term = data['searchTerm']
         if search_term:
             search_results = Question.query.filter(
                 Question.question.contains(search_term)).all()
@@ -177,7 +179,7 @@ def create_app(test_config=None):
   '''
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def retrieve_questions_by_category(category_id):
-
+        print(category_id)
         try:
             questions = Question.query.filter_by
             (Question.category == category_id).all()
