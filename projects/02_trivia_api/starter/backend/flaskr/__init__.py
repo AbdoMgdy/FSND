@@ -242,4 +242,20 @@ def create_app(test_config=None):
             'error': 422,
             'message': 'unprocessable entity'
         }), 422
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return jsonify({
+            'success': False,
+            'error': 500,
+            'message': 'Internal Server Error.'
+        }), 500
+
+    @app.errorhandler(403)
+    def forbidden(e):
+        return jsonify({
+            'success': False,
+            'error': 403,
+            'message': 'forbidden'
+        }), 403
     return app
