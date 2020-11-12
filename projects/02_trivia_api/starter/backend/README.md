@@ -157,7 +157,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 }
 ```
 
-* GET "/categories/<int:category_id>/questions"
+* GET "/questions/<int:category_id>"
     - Fetches questions for the requested category
     - Request Parameters: `category_id`: Category ID for questions
     - Response Body:
@@ -177,7 +177,6 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
     "difficulty": 1
   }],
   "total_questions": 1,
-  "current_category": 1
 }
 ```
 
