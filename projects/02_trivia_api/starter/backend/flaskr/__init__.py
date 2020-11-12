@@ -76,11 +76,9 @@ def create_app(test_config=None):
     def retrieve_questions():
         total_questions = Question.query.order_by(Question.id).all()
         page = request.args.get('page', 1)
-        print(page)
         selected_questions = paginate_questions(int(page), total_questions)
 
         categories = Category.query.order_by(Category.type).all()
-        print(categories)
 
         if len(selected_questions) == 0:
             abort(404)
@@ -179,11 +177,10 @@ def create_app(test_config=None):
   '''
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def retrieve_questions_by_category(category_id):
-        print(category_id)
         try:
-            questions = Question.query.filter_by
-            (Question.category == category_id).all()
-
+            questions = Question.query\
+                .filter(Question.category == category_id)\
+                .all()
             return jsonify({
                 'success': True,
                 'questions': [question.format() for question in questions],
