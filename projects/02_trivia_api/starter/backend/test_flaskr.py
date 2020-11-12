@@ -76,22 +76,14 @@ class TriviaTestCase(unittest.TestCase):
 
         res = self.client().delete(f'/questions/{question_id}')
         data = json.loads(res.data)
-
+        print
         question = Question.query.filter(
             Question.id == question.id).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], str(question_id))
+        self.assertEqual(data['deleted_question'], question_id)
         self.assertEqual(question, None)
-
-    def test_422_questions(self):
-        res = self.client().delete('/questions/a')
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'unprocessable')
 
     def test_add_question(self):
         new_question = {
@@ -120,7 +112,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "unprocessable")
+        self.assertEqual(data["message"], "unprocessable entity")
 
     def test_search_questions(self):
         new_search = {'searchTerm': 'a'}
@@ -143,8 +135,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "resource not found")
 
-    def test_get_questions_per_category(self):
-        res = self.client().get('/categories/1/questions')
+    def test_get_questions_by_category(self):
+        res = self.client().get('/categories/3/questions')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -178,7 +170,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data["success"], False)
-        self.assertEqual(data["message"], "unprocessable")
+        self.assertEqual(data["message"], "unprocessable entity")
 
 
 # Make the tests conveniently executable
