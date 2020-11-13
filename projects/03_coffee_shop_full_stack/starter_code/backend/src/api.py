@@ -104,6 +104,27 @@ def store_drinks():
 '''
 
 
+@requires_auth('patch:drinks')
+@app.route('/drinks/<id>', methods=['PUT'])
+def update_drink(id):
+    drink = Drink.query.get(id)
+
+    if not drink:
+        abort(404)
+    data = request.get_json()
+    try:
+        drink.title = data['title']
+        drink.recipe = data['recipe']
+        drink.update()
+    except:
+        abort(400)
+
+    return jsonify({
+        'success': True,
+        'drinks': [drink.long()]
+    })
+
+
 '''
 @TODO implement endpoint
     DELETE /drinks/<id>
