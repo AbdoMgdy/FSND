@@ -137,6 +137,18 @@ def update_drink(id):
 '''
 
 
+@requires_auth('delete:drinks')
+@app.route('/drinks/<id>', methods=['DELETE'])
+def delete_drinks(id):
+    drink = Drink.query.get(id)
+    if not drink:
+        abort(404)
+    try:
+        drink.delete()
+    except :
+        abort(500)
+
+
 # Error Handling
 '''
 Example error handling for unprocessable entity
