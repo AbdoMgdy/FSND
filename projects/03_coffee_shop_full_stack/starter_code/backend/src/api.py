@@ -1,3 +1,4 @@
+from logging import error
 import os
 from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
@@ -50,8 +51,8 @@ def get_drinks():
 
 
 @requires_auth('get:drinks-detail')
-@app.route('/drinks-detail')
-def get_drinks_detail(payload):
+@app.route('/drinks-detail', methods=['GET'])
+def get_drinks_detail():
     drinks = Drink.query.all()
 
     return jsonify({
@@ -69,6 +70,25 @@ def get_drinks_detail(payload):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
+
+
+@requires_auth('post:drinks')
+@app.route('/drinks', method=['POST'])
+def store_drinks():
+    data = request.get_json()
+
+    try:
+        drink = Drink(
+            title=data['title'],
+            recipe=data['recipe']
+        )
+        drink.insert()
+        return jsonify({
+            'success': True,
+            'drinks': [drink.long()]
+        })
+    except:
+        abort(400)
 
 
 '''
