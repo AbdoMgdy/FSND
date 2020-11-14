@@ -45,7 +45,7 @@ def get_drinks_detail():
 
 
 @requires_auth('post:drinks')
-@app.route('/drinks', method=['POST'])
+@app.route('/drinks', methods=['POST'])
 def store_drinks():
     data = request.get_json()
 
