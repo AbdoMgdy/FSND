@@ -64,7 +64,7 @@ def store_drinks():
 
 
 @requires_auth('patch:drinks')
-@app.route('/drinks/<id>', methods=['PUT'])
+@app.route('/drinks/<id>', methods=['PATCH'])
 def update_drink(id):
     drink = Drink.query.get(id)
 
@@ -106,6 +106,7 @@ def unprocessable(error):
         "error": 422,
         "message": "unprocessable"
     }), 422
+
 
 @app.errorhandler(401)
 def unauthorized(error):
